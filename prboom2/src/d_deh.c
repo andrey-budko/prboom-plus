@@ -3332,3 +3332,8 @@ dboolean deh_GetData(char *s, char *k, uint_64_t *l, char **strval, FILE *fpout)
 
   return(okrc);
 }
+
+dboolean deh_MobjFlagsUntouched(mobjtype_t type)
+{
+  return !DEH_mobjinfo_bits[type];
+}

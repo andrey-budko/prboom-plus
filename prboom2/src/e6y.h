@@ -135,6 +135,7 @@ extern int render_wipescreen;
 extern int mouse_acceleration;
 extern int demo_overwriteexisting;
 extern int quickstart_window_ms;
+extern int revenant_no_smoke_trail;
 
 extern int render_fov;
 extern int render_aspect;

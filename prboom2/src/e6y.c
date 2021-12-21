@@ -152,6 +152,7 @@ int render_wipescreen;
 int mouse_acceleration;
 int demo_overwriteexisting;
 int quickstart_window_ms;
+int revenant_no_smoke_trail;
 
 int showendoom;
 

@@ -1095,6 +1095,8 @@ default_t defaults[] =
    def_bool,ss_none},
   {"sprites_doom_order", {&sprites_doom_order}, {DOOM_ORDER_STATIC},0,DOOM_ORDER_LAST - 1,
    def_int,ss_stat},
+  {"revenant_no_smoke_trail", {&revenant_no_smoke_trail},  {0},0,1,
+   def_bool,ss_stat},
 
   {"movement_mouselook", {&movement_mouselook},  {0},0,1,
    def_bool,ss_stat},

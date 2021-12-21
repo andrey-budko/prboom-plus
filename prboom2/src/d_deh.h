@@ -1122,5 +1122,6 @@ extern const char* savegamename;
 void D_BuildBEXTables(void);
 void deh_changeCompTranslucency(void);
 void deh_applyCompatibility(void);
+dboolean deh_MobjFlagsUntouched(mobjtype_t type);
 
 #endif

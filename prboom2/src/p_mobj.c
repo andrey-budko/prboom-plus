@@ -117,6 +117,33 @@ dboolean P_SetMobjState(mobj_t* mobj,statenum_t state)
 }
 
 
+dboolean P_CheckStateSequenceSafe(statenum_t state)
+{
+  static int checked_states[NUMSTATES];
+
+  if (state == S_NULL || states[state].tics == -1)
+     return true;
+
+  memset(checked_states, 0, sizeof(checked_states));
+  
+  while(1)
+  {
+    if (checked_states[state])
+      break;
+    checked_states[state] = 1;
+
+    if(states[state].action)
+      return false;
+
+    state = states[state].nextstate;
+    if (state == S_NULL || states[state].tics == -1)
+      break;
+  }
+
+  return true;
+}
+
+
 //
 // P_ExplodeMissile
 //

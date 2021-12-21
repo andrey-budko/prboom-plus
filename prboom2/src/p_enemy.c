@@ -1493,6 +1493,39 @@ void A_SkelMissile(mobj_t *actor)
 
 int     TRACEANGLE = 0xc000000;
 
+static int IsMobjSimple(mobjtype_t type)
+{
+  mobjinfo_t *info = &mobjinfo[type];
+
+  if (!P_CheckStateSequenceSafe(info->spawnstate))
+    return false;
+
+  if (info->seestate != S_NULL || info->painstate != S_NULL ||
+    info->meleestate != S_NULL || info->missilestate != S_NULL ||
+    info->deathstate != S_NULL || info->xdeathstate != S_NULL ||
+    info->raisestate != S_NULL)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+static int CanSkipRevenantSmokeTrail()
+{
+  dboolean deh_MobjFlagsUntouched();
+  static result = -1;
+  if (result == -1)
+  {
+    result =
+      deh_MobjFlagsUntouched(MT_SMOKE) &&
+      deh_MobjFlagsUntouched(MT_PUFF) &&
+      IsMobjSimple(MT_SMOKE) &&
+      IsMobjSimple(MT_PUFF);
+  }
+  return result;
+}
+
 void A_Tracer(mobj_t *actor)
 {
   angle_t       exact;
@@ -1519,17 +1552,32 @@ void A_Tracer(mobj_t *actor)
   if ((gametic-basetic) & 3)
     return;
 
-  // spawn a puff of smoke behind the rocket
-  P_SpawnPuff(actor->x, actor->y, actor->z);
+  if (revenant_no_smoke_trail && CanSkipRevenantSmokeTrail())
+  {
+    // MT_PUFF
+    P_Random(pr_spawnpuff);
+    P_Random(pr_spawnpuff);
+    P_Random (pr_lastlook);
+    P_Random(pr_spawnpuff);
 
-  th = P_SpawnMobj (actor->x-actor->momx,
-                    actor->y-actor->momy,
-                    actor->z, MT_SMOKE);
+    // MT_SMOKE
+    P_Random (pr_lastlook);
+    P_Random(pr_tracer);
+  }
+  else
+  {
+    // spawn a puff of smoke behind the rocket
+    P_SpawnPuff(actor->x, actor->y, actor->z);
 
-  th->momz = FRACUNIT;
-  th->tics -= P_Random(pr_tracer) & 3;
-  if (th->tics < 1)
-    th->tics = 1;
+    th = P_SpawnMobj (actor->x-actor->momx,
+                      actor->y-actor->momy,
+                      actor->z, MT_SMOKE);
+
+    th->momz = FRACUNIT;
+    th->tics -= P_Random(pr_tracer) & 3;
+    if (th->tics < 1)
+      th->tics = 1;
+  }
 
   // adjust direction
   dest = actor->tracer;
